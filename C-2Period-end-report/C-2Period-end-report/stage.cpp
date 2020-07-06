@@ -1,7 +1,7 @@
 #include "stageobject.h"
 
 char* str_tok_s(char* data, const char* delim, char** ctx);
-void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl,map<pair<int,int>,Generator>& mp,vector<Generator>& gts) {
+void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl,map<pair<int,int>,Generator>& mp,Exit& e) {
 	FILE* fp;
 	char s[BUFFSIZE];
 	errno_t error;
@@ -33,15 +33,21 @@ void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl,map<
 					pl.x = j;
 				}
 				else if (stage[i][j] == Gt) {
-					mp[pair<int, int>(i, j)] = gts[gt_cnt];
+					Generator g = {
+						0,Off
+					};
+					mp[pair<int, int>(i, j)] = g;
 					++gt_cnt;
+				}
+				else if(stage[i][j]==Ext){
+					e.status = Off;
 				}
 			}
 		}
 		fclose(fp);
 	}
 }
-void show_stage(P p,vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mp) {
+void show_stage(P p,vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mp,Exit& e) {
 	rep(i, STAGE_H) {
 		rep(j, STAGE_W) {
 			if (stage[i][j] == Wall) {//ï«Çï`âÊÇ∑ÇÈÅB
@@ -62,7 +68,13 @@ void show_stage(P p,vector<vector<int>>& stage,Player& pl, map<pair<int, int>, G
 				mvaddstr(p.y + i, p.x + j, "G");
 			}
 			else if (stage[i][j] == Ext) {//èoå˚
-				attrset(COLOR_PAIR(2));
+				Unlock(mp,e);
+				if (e.status == On) {
+					attrset(COLOR_PAIR(4));
+				}
+				else {
+					attrset(COLOR_PAIR(2));
+				}
 				mvaddstr(p.y + i, p.x + j, "E");
 			}
 		}

@@ -13,10 +13,12 @@ int main()
 	//外部変数
 	//変数
 	vector<vector<int>> stage(STAGE_H, vector<int>(STAGE_W));
-	vector<Generator> Gts;
 	map<pair<int, int>, Generator> mpg;//座標から発電機を識別する
 	Player pl = {
 		0,0,0
+	};
+	Exit e = {
+		Off
 	};
 	int H, W;//ウィンドウサイズ
 	P stage_pivot;
@@ -33,13 +35,8 @@ int main()
 	int Gt_cnt = 0;//発電機の数
 	readChar(section, "In", "NotFound", Stage1f, setf);
 	Gt_cnt = readInt(section, "Gen_cnt", -1, setf);
-	Gts.resize(Gt_cnt);
-	rep(i, Gt_cnt) {//発電機初期化
-		Gts[i] = {
-			0,Off
-		};
-	}
-	init_stage(Stage1f,stage,pl,mpg,Gts);//ステージ初期化
+
+	init_stage(Stage1f,stage,pl,mpg,e);//ステージ初期化
 
 	initscr();//処理開始
 	noecho();//キー入力した文字の非表示モード
@@ -59,8 +56,8 @@ int main()
 
 	while (1) {
 		erase();
-		show_stage(stage_pivot,stage,pl,mpg);
-		Move(stage,pl,mpg);
+		show_stage(stage_pivot,stage,pl,mpg,e);
+		Move(stage,pl,mpg,e);
 	}
 	//終了
 	getch();

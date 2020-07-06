@@ -40,7 +40,7 @@ typedef struct Player {
 	int y;
 	int status;
 };
-enum G_status {//発電機が付いているか
+enum GE_status {//発電機が付いているか
 	Off,
 	On
 };
@@ -48,18 +48,24 @@ typedef struct Generator {
 	int status;
 	int count;
 };
+typedef struct Exit {
+	int status;
+};
 /*
 	ステージ
 */
-void init_stage(const char* file_name, vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg,vector<Generator>& gts);
-void show_stage(P p, vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg);
+void init_stage(const char* file_name, vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg,Exit& e);
+void show_stage(P p, vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg, Exit& e);
 /*
 	プレイヤー
 */
-void Move(vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg);
+void Move(vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg,Exit& e);
 /*
 	発電機
 */
-
 void Charge(Generator& g);
+/*
+	出口
+*/
+void Unlock(map<pair<int,int>,Generator>& mp, Exit& e);
 #endif
