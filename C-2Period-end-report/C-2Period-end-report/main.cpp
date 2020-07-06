@@ -1,14 +1,7 @@
-﻿#include <iostream>
-#include "curses.h"
-#include <vector>
-#include <stdio.h>
-#include "Setting.h"
-#include "stage.h"
-#define STAGE_W 10
-#define STAGE_H 20
+﻿#include "stageobject.h"
+
 #define CHARBUFF 124 
-using namespace std;
-#define rep(i,n) for(int i=0;i<n;i++)
+
 //windowsize=192×50
 //stagesize=20×40
 
@@ -18,8 +11,11 @@ using namespace std;
 int main()
 {
 	//外部変数
-	extern vector<vector<int>> stage;
 	//変数
+	vector<vector<int>> stage(STAGE_H, vector<int>(STAGE_W));
+	Player pl = {
+		0,0,0
+	};
 	int H, W;//ウィンドウサイズ
 	P stage_pivot;
 	stage_pivot.x=STAGE_PIVOT_X;
@@ -41,7 +37,7 @@ int main()
 		}
 		cout << endl;
 	}*///ステージデータ取得
-	init_stage(Stage1f);//
+	init_stage(Stage1f,stage,pl);//ステージ初期化
 
 	initscr();//処理開始
 	noecho();//キー入力した文字の非表示モード
@@ -58,7 +54,12 @@ int main()
 	init_pair(7, COLOR_RED, COLOR_BLACK);//プレイヤー-危険(P)
 	init_pair(8, COLOR_BLACK, COLOR_BLACK);//幽霊(g)
 	getmaxyx(stdscr, H, W);//ウィンドウの幅と高さ取得
-	show_stage(stage_pivot);
+	//show_stage(stage_pivot, stage);
+	while (1) {
+		erase();
+		show_stage(stage_pivot,stage,pl);
+		Move(stage,pl);
+	}
 	//終了
 	getch();
 	endwin();

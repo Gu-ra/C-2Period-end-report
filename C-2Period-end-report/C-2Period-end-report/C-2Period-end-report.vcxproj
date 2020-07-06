@@ -166,6 +166,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="Setting.cpp" />
   </ItemGroup>
@@ -173,7 +174,7 @@
     <ClInclude Include="..\..\..\C-7\C言語Ⅱ-7\C言語Ⅱ-7\PDCursesLib\include\curses.h" />
     <ClInclude Include="..\..\..\C-7\C言語Ⅱ-7\C言語Ⅱ-7\PDCursesLib\include\curspriv.h" />
     <ClInclude Include="..\..\..\C-7\C言語Ⅱ-7\C言語Ⅱ-7\PDCursesLib\include\panel.h" />
-    <ClInclude Include="stage.h" />
+    <ClInclude Include="stageobject.h" />
     <ClInclude Include="Setting.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

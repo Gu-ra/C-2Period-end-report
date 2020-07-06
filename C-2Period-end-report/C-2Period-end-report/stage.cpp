@@ -1,16 +1,7 @@
-#include <iostream>
-#include "curses.h"
-#include "Setting.h"
-#include <vector>
-#include "stage.h"
-#define BUFFSIZE 1024
-#define STAGE_W 40
-#define STAGE_H 20
-using namespace std;
-#define rep(i,n) for(int i=0;i<n;i++)
+#include "stageobject.h"
+
 char* str_tok_s(char* data, const char* delim, char** ctx);
-vector<vector<int>> stage(STAGE_H, vector<int>(STAGE_W));
-void init_stage(const char* file_name) {
+void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl) {
 	FILE* fp;
 	char s[BUFFSIZE];
 	errno_t error;
@@ -34,19 +25,18 @@ void init_stage(const char* file_name) {
 			++h;
 			if (h >= STAGE_H)break;
 		}
+		rep(i, STAGE_H) {
+			rep(j, STAGE_W) {
+				if (stage[i][j] == 2) {
+					pl.y = i;
+					pl.x = j;
+				}
+			}
+		}
 		fclose(fp);
 	}
 }
-void show_stage(P p) {
-	/*start_color();//色の準備
-	init_pair(1, COLOR_WHITE, COLOR_WHITE);//壁(白色ブロック)
-	init_pair(2, COLOR_BLACK, COLOR_RED);//発電機-off(G)と、出口-off(E)
-	init_pair(3, COLOR_BLACK, COLOR_YELLOW);//発電機-on(G)
-	init_pair(4, COLOR_BLACK, COLOR_GREEN);//出口-on(E)
-	init_pair(5, COLOR_GREEN, COLOR_BLACK);//プレイヤー-安全(P)
-	init_pair(6, COLOR_YELLOW, COLOR_BLACK);//プレイヤー-注意(P)
-	init_pair(7, COLOR_RED, COLOR_BLACK);//プレイヤー-危険(P)
-	init_pair(8, COLOR_BLACK, COLOR_BLACK);//幽霊(g)*/
+void show_stage(P p,vector<vector<int>>& stage,Player& pl) {
 	rep(i, STAGE_H) {
 		rep(j, STAGE_W) {
 			if (stage[i][j] == 1) {//壁を描画する。
@@ -55,7 +45,7 @@ void show_stage(P p) {
 			}
 			else if (stage[i][j] == 2) {//プレイヤー
 				attrset(COLOR_PAIR(5));
-				mvaddstr(p.y + i, p.x + j, "P");
+				mvaddstr(p.y+pl.y, p.x+pl.x, "P");
 			}
 			else if (stage[i][j] == 3) {//発電機
 				attrset(COLOR_PAIR(2));
