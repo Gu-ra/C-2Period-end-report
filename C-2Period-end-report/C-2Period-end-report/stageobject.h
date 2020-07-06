@@ -4,8 +4,10 @@
 #include <iostream>
 #include "curses.h"
 #include "Setting.h"
+#include "Result.h"
 #include <vector>
 #include <map>
+#include <random>
 
 using namespace std;
 //ステージを描画する基準となる左上の座標
@@ -16,7 +18,7 @@ using namespace std;
 
 #define STAGE_W 40
 #define STAGE_H 20
-
+#define GHOSTCNT 5
 #define rep(i,n) for(int i=0;i<n;i++)
 
 typedef struct P {
@@ -28,7 +30,8 @@ enum Stage_Objects {
 	Wall,
 	Plr,//プレイヤー
 	Gt,//発電機
-	Ext//出口
+	Ext,//出口
+	Gh
 };
 enum P_status {//幽霊が近いかどうか
 	Safe,//安全
@@ -39,6 +42,10 @@ typedef struct Player {
 	int x;
 	int y;
 	int status;
+};
+typedef struct Ghost {
+	int x;
+	int y;
 };
 enum GE_status {//発電機が付いているか
 	Off,
@@ -54,12 +61,13 @@ typedef struct Exit {
 /*
 	ステージ
 */
-void init_stage(const char* file_name, vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg,Exit& e);
-void show_stage(P p, vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg, Exit& e);
+void init_stage(const char* file_name, vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg,Exit& e,vector<Ghost>& gts);
+void show_stage(P p, vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg, Exit& e, vector<Ghost>& gts);
 /*
 	プレイヤー
 */
-void Move(vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg,Exit& e);
+void Move(vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mpg,Exit& e,int& resultflg);
+int GetGhostMinDistance(Player& pl, vector<Ghost>& ghs);
 /*
 	発電機
 */
@@ -68,4 +76,8 @@ void Charge(Generator& g);
 	出口
 */
 void Unlock(map<pair<int,int>,Generator>& mp, Exit& e);
+/*
+	幽霊
+*/
+void Gmove(vector<vector<int>>& stage,vector<Ghost>& ghs);
 #endif

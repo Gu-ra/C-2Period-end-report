@@ -1,5 +1,4 @@
 ﻿#include "stageobject.h"
-
 #define CHARBUFF 124 
 
 //windowsize=192×50
@@ -10,10 +9,16 @@
 */
 int main()
 {
-	//外部変数
 	//変数
 	vector<vector<int>> stage(STAGE_H, vector<int>(STAGE_W));
 	map<pair<int, int>, Generator> mpg;//座標から発電機を識別する
+	vector<Ghost> gts(GHOSTCNT);
+	int resultflg = 0;//1でクリア、2でゲームオーバー
+	rep(i, GHOSTCNT) {
+		gts[i] = {
+			0,0
+		};
+	}
 	Player pl = {
 		0,0,0
 	};
@@ -36,7 +41,7 @@ int main()
 	readChar(section, "In", "NotFound", Stage1f, setf);
 	Gt_cnt = readInt(section, "Gen_cnt", -1, setf);
 
-	init_stage(Stage1f,stage,pl,mpg,e);//ステージ初期化
+	init_stage(Stage1f,stage,pl,mpg,e,gts);//ステージ初期化
 
 	initscr();//処理開始
 	noecho();//キー入力した文字の非表示モード
@@ -52,12 +57,21 @@ int main()
 	init_pair(6, COLOR_YELLOW, COLOR_BLACK);//プレイヤー-注意(P)
 	init_pair(7, COLOR_RED, COLOR_BLACK);//プレイヤー-危険(P)
 	init_pair(8, COLOR_BLACK, COLOR_BLACK);//幽霊(g)
-	getmaxyx(stdscr, H, W);//ウィンドウの幅と高さ取得
 
 	while (1) {
 		erase();
-		show_stage(stage_pivot,stage,pl,mpg,e);
-		Move(stage,pl,mpg,e);
+		show_stage(stage_pivot,stage,pl,mpg,e,gts);
+		Move(stage,pl,mpg,e,resultflg);
+		Gmove(stage,gts);
+		if (resultflg!=0) {
+			break;
+		}
+	}
+	if (resultflg == 1) {
+		GameClear();
+	}
+	else if (resultflg == 2) {
+		GameOver();
 	}
 	//終了
 	getch();

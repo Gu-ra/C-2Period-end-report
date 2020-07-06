@@ -167,8 +167,10 @@
   <ItemGroup>
     <ClCompile Include="Exit.cpp" />
     <ClCompile Include="Generator.cpp" />
+    <ClCompile Include="Ghost.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Result.cpp" />
     <ClCompile Include="stage.cpp" />
     <ClCompile Include="Setting.cpp" />
   </ItemGroup>
@@ -176,6 +178,7 @@
     <ClInclude Include="..\..\..\C-7\C言語Ⅱ-7\C言語Ⅱ-7\PDCursesLib\include\curses.h" />
     <ClInclude Include="..\..\..\C-7\C言語Ⅱ-7\C言語Ⅱ-7\PDCursesLib\include\curspriv.h" />
     <ClInclude Include="..\..\..\C-7\C言語Ⅱ-7\C言語Ⅱ-7\PDCursesLib\include\panel.h" />
+    <ClInclude Include="Result.h" />
     <ClInclude Include="stageobject.h" />
     <ClInclude Include="Setting.h" />
   </ItemGroup>
