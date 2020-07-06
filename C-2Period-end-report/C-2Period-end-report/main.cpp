@@ -13,6 +13,8 @@ int main()
 	//外部変数
 	//変数
 	vector<vector<int>> stage(STAGE_H, vector<int>(STAGE_W));
+	vector<Generator> Gts;
+	map<pair<int, int>, Generator> mpg;//座標から発電機を識別する
 	Player pl = {
 		0,0,0
 	};
@@ -28,16 +30,16 @@ int main()
 	sprintf_s(setf, "%s\\setting.ini", curdir);
 	const char* section= "Stage1";
 	char Stage1f[CHARBUFF];//ファイル名
+	int Gt_cnt = 0;//発電機の数
 	readChar(section, "In", "NotFound", Stage1f, setf);
-	//printf("%s\n", Stage1f);ステージファイル取得
-
-	/*rep(i, STAGE_H) {
-		rep(j, STAGE_W) {
-			cout << stage[i][j]<<" ";
-		}
-		cout << endl;
-	}*///ステージデータ取得
-	init_stage(Stage1f,stage,pl);//ステージ初期化
+	Gt_cnt = readInt(section, "Gen_cnt", -1, setf);
+	Gts.resize(Gt_cnt);
+	rep(i, Gt_cnt) {//発電機初期化
+		Gts[i] = {
+			0,Off
+		};
+	}
+	init_stage(Stage1f,stage,pl,mpg,Gts);//ステージ初期化
 
 	initscr();//処理開始
 	noecho();//キー入力した文字の非表示モード
@@ -54,11 +56,11 @@ int main()
 	init_pair(7, COLOR_RED, COLOR_BLACK);//プレイヤー-危険(P)
 	init_pair(8, COLOR_BLACK, COLOR_BLACK);//幽霊(g)
 	getmaxyx(stdscr, H, W);//ウィンドウの幅と高さ取得
-	//show_stage(stage_pivot, stage);
+
 	while (1) {
 		erase();
-		show_stage(stage_pivot,stage,pl);
-		Move(stage,pl);
+		show_stage(stage_pivot,stage,pl,mpg);
+		Move(stage,pl,mpg);
 	}
 	//終了
 	getch();

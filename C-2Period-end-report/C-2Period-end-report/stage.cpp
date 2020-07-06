@@ -1,7 +1,7 @@
 #include "stageobject.h"
 
 char* str_tok_s(char* data, const char* delim, char** ctx);
-void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl) {
+void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl,map<pair<int,int>,Generator>& mp,vector<Generator>& gts) {
 	FILE* fp;
 	char s[BUFFSIZE];
 	errno_t error;
@@ -25,33 +25,43 @@ void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl) {
 			++h;
 			if (h >= STAGE_H)break;
 		}
+		int gt_cnt = 0;
 		rep(i, STAGE_H) {
 			rep(j, STAGE_W) {
-				if (stage[i][j] == 2) {
+				if (stage[i][j] == Plr) {
 					pl.y = i;
 					pl.x = j;
+				}
+				else if (stage[i][j] == Gt) {
+					mp[pair<int, int>(i, j)] = gts[gt_cnt];
+					++gt_cnt;
 				}
 			}
 		}
 		fclose(fp);
 	}
 }
-void show_stage(P p,vector<vector<int>>& stage,Player& pl) {
+void show_stage(P p,vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mp) {
 	rep(i, STAGE_H) {
 		rep(j, STAGE_W) {
-			if (stage[i][j] == 1) {//壁を描画する。
+			if (stage[i][j] == Wall) {//壁を描画する。
 				attrset(COLOR_PAIR(1));
 				mvaddstr(p.y + i, p.x + j,".");
 			}
-			else if (stage[i][j] == 2) {//プレイヤー
+			else if (stage[i][j] == Plr) {//プレイヤー
 				attrset(COLOR_PAIR(5));
 				mvaddstr(p.y+pl.y, p.x+pl.x, "P");
 			}
-			else if (stage[i][j] == 3) {//発電機
-				attrset(COLOR_PAIR(2));
+			else if (stage[i][j] == Gt) {//発電機
+				if (mp[pair<int, int>(i, j)].status == On) {
+					attrset(COLOR_PAIR(3));
+				}
+				else {
+					attrset(COLOR_PAIR(2));
+				}
 				mvaddstr(p.y + i, p.x + j, "G");
 			}
-			else if (stage[i][j] == 4) {//出口
+			else if (stage[i][j] == Ext) {//出口
 				attrset(COLOR_PAIR(2));
 				mvaddstr(p.y + i, p.x + j, "E");
 			}
