@@ -1,5 +1,4 @@
 #include "stageobject.h"
-template<class T> inline bool chmin(T& a, T b) { if (a > b) { a = b; return 1; } return 0; }
 void Act(int& turn) {
 	int key = getch();
 	int H, W;
