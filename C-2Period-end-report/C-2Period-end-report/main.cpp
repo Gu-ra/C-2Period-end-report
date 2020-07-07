@@ -3,28 +3,32 @@
 
 //windowsize=192×50
 //stagesize=20×40
-
+/*
+	外部変数
+*/
+vector<vector<int>> stage(STAGE_H, vector<int>(STAGE_W));//ステージ情報
+map<pair<int, int>, Generator> mpg;//座標から発電機を識別する
+vector<Ghost> gts(GHOSTCNT);//幽霊達を管理する可変長配列
+int resultflg = 0;//1でクリア、2でゲームオーバー
+Player pl = {
+		0,0,0
+};
+Exit e = {
+	Off
+};
+//結果出力
+void FileOut(const char* fileName, int turn, const char* result);
 /*
 	メインファイル
 */
 int main()
 {
-	//変数
-	vector<vector<int>> stage(STAGE_H, vector<int>(STAGE_W));
-	map<pair<int, int>, Generator> mpg;//座標から発電機を識別する
-	vector<Ghost> gts(GHOSTCNT);
-	int resultflg = 0;//1でクリア、2でゲームオーバー
+	int turn = 0;//脱出までにかかった時間
 	rep(i, GHOSTCNT) {
 		gts[i] = {
 			0,0
 		};
 	}
-	Player pl = {
-		0,0,0
-	};
-	Exit e = {
-		Off
-	};
 	int H, W;//ウィンドウサイズ
 	P stage_pivot;
 	stage_pivot.x=STAGE_PIVOT_X;
@@ -37,11 +41,9 @@ int main()
 	sprintf_s(setf, "%s\\setting.ini", curdir);
 	const char* section= "Stage1";
 	char Stage1f[CHARBUFF];//ファイル名
-	int Gt_cnt = 0;//発電機の数
 	readChar(section, "In", "NotFound", Stage1f, setf);
-	Gt_cnt = readInt(section, "Gen_cnt", -1, setf);
 
-	init_stage(Stage1f,stage,pl,mpg,e,gts);//ステージ初期化
+	init_stage(Stage1f);//ステージ初期化
 
 	initscr();//処理開始
 	noecho();//キー入力した文字の非表示モード
@@ -60,21 +62,42 @@ int main()
 
 	while (1) {
 		erase();
-		show_stage(stage_pivot,stage,pl,mpg,e,gts);
-		Move(stage,pl,mpg,e,resultflg);
-		Gmove(stage,gts);
-		if (resultflg!=0) {
+		show_stage(stage_pivot);
+		Act(turn);
+		Gmove();
+		if (resultflg!=Playing) {
 			break;
 		}
 	}
-	if (resultflg == 1) {
+	if (resultflg == Clear) {
+		FileOut("Result", turn, "Clear!");
 		GameClear();
 	}
-	else if (resultflg == 2) {
+	else if (resultflg == Failed) {
+		FileOut("Result", turn, "Failed...");
 		GameOver();
+	}
+	else {
+		FileOut("Result", turn, "Quited");
 	}
 	//終了
 	getch();
 	endwin();
 	return (0);
+}
+
+void FileOut(const char* fileName,int turn,const char* result) {
+	FILE* fp;
+	char s[BUFFSIZE];
+	char tmp[BUFFSIZE];
+	strcpy_s(tmp, fileName);
+	strcat_s(tmp, ".txt");
+	errno_t error;
+	error = fopen_s(&fp, tmp, "w");
+	if (error != 0)
+		fprintf_s(stderr, "failed to open");
+	else {
+		fprintf_s(fp, "%s\nかかったターン：%dターン\n",result,turn);
+		fclose(fp);
+	}
 }

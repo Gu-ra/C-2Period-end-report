@@ -1,6 +1,6 @@
 #include "stageobject.h"
 
-void Gmove(vector<vector<int>>& stage, vector<Ghost>& gts) {
+void Gmove() {
 	random_device rnd;
 	mt19937 mt(rnd());
 	rep(i, GHOSTCNT) {

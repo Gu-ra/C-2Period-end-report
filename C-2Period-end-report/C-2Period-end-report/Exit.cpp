@@ -1,7 +1,7 @@
 #include "stageobject.h"
-void Unlock(map<pair<int, int>, Generator>& mp,Exit& e) {
+void Unlock() {
 	bool flg = true;
-	for (auto i = mp.begin(); i != mp.end(); i++) {
+	for (auto i = mpg.begin(); i != mpg.end(); i++) {
 		if (i->second.status == Off) {
 			flg = false;
 		}

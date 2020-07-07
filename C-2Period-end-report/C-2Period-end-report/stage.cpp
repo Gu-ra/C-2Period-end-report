@@ -1,7 +1,7 @@
 #include "stageobject.h"
 
 char* str_tok_s(char* data, const char* delim, char** ctx);
-void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl,map<pair<int,int>,Generator>& mp,Exit& e,vector<Ghost>& gts) {
+void init_stage(const char* file_name) {
 	FILE* fp;
 	char s[BUFFSIZE];
 	errno_t error;
@@ -40,7 +40,7 @@ void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl,map<
 					Generator g = {
 						0,Off
 					};
-					mp[pair<int, int>(i, j)] = g;
+					mpg[pair<int, int>(i, j)] = g;
 					++gt_cnt;
 				}
 				else if(stage[i][j]==Ext){
@@ -70,7 +70,7 @@ void init_stage(const char* file_name,vector<vector<int>>& stage,Player& pl,map<
 		fclose(fp);
 	}
 }
-void show_stage(P p,vector<vector<int>>& stage,Player& pl, map<pair<int, int>, Generator>& mp,Exit& e, vector<Ghost>& gts) {
+void show_stage(P p) {
 	rep(i, STAGE_H) {
 		rep(j, STAGE_W) {
 			if (stage[i][j] == Wall) {//壁を描画する。
@@ -78,19 +78,19 @@ void show_stage(P p,vector<vector<int>>& stage,Player& pl, map<pair<int, int>, G
 				mvaddstr(p.y + i, p.x + j,".");
 			}
 			else if (stage[i][j] == Plr) {//プレイヤー
-				if (GetGhostMinDistance(pl, gts)==Safe) {
+				if (GetGhostMinDistance()==Safe) {
 					attrset(COLOR_PAIR(5));
 				}
-				else if (GetGhostMinDistance(pl, gts) == Cautious) {
+				else if (GetGhostMinDistance() == Cautious) {
 					attrset(COLOR_PAIR(6));
 				}
-				else if (GetGhostMinDistance(pl, gts) == Dengerous) {
+				else if (GetGhostMinDistance() == Dengerous) {
 					attrset(COLOR_PAIR(7));
 				}
 				mvaddstr(p.y+pl.y, p.x+pl.x, "P");
 			}
 			else if (stage[i][j] == Gt) {//発電機
-				if (mp[pair<int, int>(i, j)].status == On) {
+				if (mpg[pair<int, int>(i, j)].status == On) {
 					attrset(COLOR_PAIR(3));
 				}
 				else {
@@ -99,7 +99,7 @@ void show_stage(P p,vector<vector<int>>& stage,Player& pl, map<pair<int, int>, G
 				mvaddstr(p.y + i, p.x + j, "G");
 			}
 			else if (stage[i][j] == Ext) {//出口
-				Unlock(mp,e);
+				Unlock();
 				if (e.status == On) {
 					attrset(COLOR_PAIR(4));
 				}
