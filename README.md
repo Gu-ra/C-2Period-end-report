@@ -1,4 +1,4 @@
-# C-2Period-end-report
+# Dead bye dead light 風ゲーム
 見えない幽霊から逃げながら発電機を全て回し、出口から脱出するゲームである。
 # DEMO
 ![ゲーム画面1](https://user-images.githubusercontent.com/60833795/86688948-84b3bb00-c041-11ea-985b-579bc2aec242.PNG)
